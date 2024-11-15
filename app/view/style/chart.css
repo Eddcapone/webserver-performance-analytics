@@ -1,0 +1,20 @@
+.chart-container {
+	
+	display: flex;
+	justify-content: center;
+	margin: 0 auto;
+	width: 75%;
+}
+.size-2 {
+	width: 50% !important;
+}
+.size-3 {
+	width: 33% !important;
+}
+.size-4 {
+	width: 25% !important;
+}
+canvas {
+	background: white;
+	width: 100% !important;
+}

@@ -1,0 +1,73 @@
+function createNewChart(name, value, color, labelOverride, description = "")
+{
+    // Initialize Chart
+    var ctx = document.getElementById(name).getContext('2d');
+
+    var label = name;
+    if (labelOverride) {
+        label = labelOverride;
+    }
+
+    // Plugin to add description text with line breaks
+    const descriptionPlugin = {
+        id: 'descriptionPlugin',
+        afterDraw(chart) {
+            const {ctx, chartArea: {top, left, width, height}} = chart;
+            ctx.save();
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#424242';
+            // Define multiline text
+            const lines = description.split('. ');  // Split the text into lines
+            const lineHeight = 20;  // Set the line height for spacing
+            lines.forEach((line, i) => {
+                // Adjust the y-coordinate for each line
+                ctx.fillText(line, left + width / 2, top - 40 - (lines.length - i - 1) * lineHeight);
+            });
+            ctx.restore();
+        }
+    };
+
+    new Chart(ctx, {
+        type: 'line',   // Define the type of chart
+        data: {
+            labels: timestamps,
+            datasets: [{
+                label: label,
+                data: value,
+                borderColor: color,
+                fill: false,
+                pointRadius: 0,
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            interaction: {
+                mode: 'index',
+                intersect: false,
+            },
+            scales: {
+                x: {
+                    type: 'time',
+                    time: { unit: 'minute' }
+                },
+                y: { 
+                    beginAtZero: true 
+                }
+            },
+            plugins: {
+                legend: { display: true }, // Optionally toggle the legend
+
+                title: {
+                    display: true,
+                    // text: 'CPU Usage Time Series',
+                    padding: {
+                        top: 60 // Increase padding at the top to accommodate multiline text
+                    }
+                }
+            },
+        },
+        plugins: [descriptionPlugin] // Register your custom plugin here
+    });
+}
