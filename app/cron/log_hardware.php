@@ -77,7 +77,7 @@ function getCpuMetrics()
 // Function to execute mpstat once and parse results for both core utilization and I/O wait
 function getMoreCpuMetrics()
 {
-    $output = shell_exec("mpstat -P ALL 100 1");    // collect for X seconds and return average values
+    $output = shell_exec("mpstat -P ALL 90 1");    // collect for X seconds and return average values
     $lines = explode("\n", $output);
     $coreUtilizations = [];
     $steal = 0;
