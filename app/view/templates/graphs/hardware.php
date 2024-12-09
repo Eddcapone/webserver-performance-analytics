@@ -26,7 +26,7 @@ foreach($coreUtilRaw as $item) {
     }
     .title {
         color: black;
-        text-align: left;
+        text-align: center;
         font-size: 40px;
     }
 
