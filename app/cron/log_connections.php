@@ -6,7 +6,7 @@ include "../etc/env.php";
 include "../global_vars.php";
 
 // Connect to MariaDB
-$conn = new mysqli($host, $user, $password, $dbname);
+$conn = new mysqli($host, $user, $pass, $dbname);
 
 // Check connection
 if ($conn->connect_error) {
