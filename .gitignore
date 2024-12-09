@@ -1,2 +1,3 @@
 error_log
 app/etc/env.php
+var/log/
