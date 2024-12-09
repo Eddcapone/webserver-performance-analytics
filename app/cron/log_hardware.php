@@ -5,6 +5,7 @@ sleep(10);
 checkLock();
 
 include "../etc/env.php";
+include "../global_vars.php";
 
 // PDO connection
 try {
@@ -14,11 +15,61 @@ try {
     die("Could not connect to the database $dbname :" . $e->getMessage());
 }
 
+function getTopProcesses()
+{
+    // Use -ww for unlimited width, ensuring longer commands are not truncated
+    $command = 'ps -eo pid,%cpu,cmd --sort=-%cpu -ww | head -n 11';
+    exec($command, $output);
+
+    $processes = [];
+    foreach ($output as $i => $line) {
+        // Skip header line if present
+        if ($i === 0 && stripos($line, 'PID') !== false) {
+            continue;
+        }
+
+        // Split into up to 3 parts: PID, %CPU, and the full command line
+        $parts = preg_split('/\s+/', $line, 3);
+        if (count($parts) === 3) {
+            $processes[] = [
+                'pid'       => $parts[0],
+                'cpu_usage' => $parts[1],
+                'command'   => $parts[2],
+            ];
+        }
+    }
+
+    return $processes;
+}
+
+function logTopProcesses()
+{
+    $topProcesses = getTopProcesses();
+    $logFilePath = __DIR__ . '/../../var/log/top_processes.log'; // Ensure the directory path is correct
+
+    // Prepare log entry with current date and time
+    $logEntry = date('Y-m-d H:i:s') . " - Top CPU Processes:\n";
+
+    // Append each process information to the log entry
+    foreach ($topProcesses as $process) {
+        $logEntry .= sprintf("PID: %s, CPU Usage: %s%%, Command: %s\n",
+                             $process['pid'], $process['cpu_usage'], $process['command']);
+    }
+    $logEntry .= "\n";
+
+    // Write to log file
+    file_put_contents($logFilePath, $logEntry, FILE_APPEND);
+}
+
 // Function to get CPU usage and frequency
 function getCpuMetrics()
 {
     $load = sys_getloadavg();
     $cpuUsage = $load[0];
+
+    if ($cpuUsage > CPU_COUNT) {
+        logTopProcesses();
+    }
     $frequency = shell_exec("lscpu | grep 'MHz' | awk '{print $3}'");
     return array('cpuUsage' => $cpuUsage, 'cpuFrequency' => trim($frequency));
 }

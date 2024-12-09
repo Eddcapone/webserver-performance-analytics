@@ -7,4 +7,6 @@ $limits = [
 	"qcache" => 10000,
 ];
 
+define("CPU_COUNT", 10);
+
 ?>
