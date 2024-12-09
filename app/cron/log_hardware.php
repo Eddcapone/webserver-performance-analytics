@@ -17,8 +17,8 @@ try {
 
 function getTopProcesses()
 {
-    // Use -ww for unlimited width, ensuring longer commands are not truncated
-    $command = 'ps -eo pid,%cpu,cmd --sort=-%cpu -ww | head -n 11';
+    // Use the constant MAX_PROCESSES to define how many lines to get, adding one for the header
+    $command = 'ps -eo pid,%cpu,cmd --sort=-%cpu -ww | head -n ' . (LOG_MAX_PROCESSES + 1);
     exec($command, $output);
 
     $processes = [];
@@ -67,7 +67,7 @@ function getCpuMetrics()
     $load = sys_getloadavg();
     $cpuUsage = $load[0];
 
-    if ($cpuUsage > CPU_COUNT) {
+    if ($cpuUsage > LOG_THRESHOLD_LOAD_AVERAGE) {
         logTopProcesses();
     }
     $frequency = shell_exec("lscpu | grep 'MHz' | awk '{print $3}'");

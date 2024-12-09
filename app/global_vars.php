@@ -7,6 +7,8 @@ $limits = [
 	"qcache" => 10000,
 ];
 
-define("CPU_COUNT", 10);
+// Hardware Logging
+define('LOG_MAX_PROCESSES', 10);  // Change this value as needed for different projects
+define("LOG_THRESHOLD_LOAD_AVERAGE", 10);	 // If the load average is above this value, then log LOG_MAX_PROCESSES amount of processes
 
 ?>
