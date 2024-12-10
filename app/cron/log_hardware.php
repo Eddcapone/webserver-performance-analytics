@@ -28,16 +28,20 @@ function getTopProcesses()
             continue;
         }
 
-        // Split into up to 3 parts: PID, %CPU, and the full command line
-        $parts = preg_split('/\s+/', $line, 3);
-        if (count($parts) === 3) {
+        // Use a regex to split the line into PID, %CPU, and CMD, handling extra spaces robustly
+        if (preg_match('/^\s*(\d+)\s+([\d.]+)\s+(.+)$/', $line, $matches)) {
             $processes[] = [
-                'pid'       => $parts[0],
-                'cpu_usage' => $parts[1],
-                'command'   => $parts[2],
+                'pid'       => $matches[1],
+                'cpu_usage' => (float)$matches[2],
+                'command'   => $matches[3],
             ];
         }
     }
+
+    // Sort the processes by CPU usage in descending order to ensure correct ordering
+    usort($processes, function ($a, $b) {
+        return $b['cpu_usage'] <=> $a['cpu_usage'];
+    });
 
     return $processes;
 }
