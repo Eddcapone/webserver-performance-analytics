@@ -1,10 +1,10 @@
 <?php
 
 $limits = [
-    "general" => 10000,
-	"hardware" => 500000,
-	"innodb" => 10000,
-	"qcache" => 10000,
+    "general" => 1000,
+	"hardware" => 1000,
+	"innodb" => 1000,
+	"qcache" => 1000
 ];
 
 // Hardware Logging

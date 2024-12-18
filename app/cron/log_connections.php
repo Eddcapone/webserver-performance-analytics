@@ -1,9 +1,7 @@
 <?php
 
-sleep(40);
-
-include "../etc/env.php";
-include "../global_vars.php";
+require_once __DIR__ . '/../etc/env.php';
+require_once __DIR__ . '/../global_vars.php';
 
 // Connect to MariaDB
 $conn = new mysqli($host, $user, $pass, $dbname);

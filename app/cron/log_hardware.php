@@ -1,11 +1,10 @@
 <?php
 
-sleep(10);
+require_once __DIR__ . '/../etc/env.php';
+require_once __DIR__ . '/../global_vars.php';
+require_once __DIR__ . '/includes/lockHandler.php';
 
-checkLock();
-
-include "../etc/env.php";
-include "../global_vars.php";
+checkLock('/tmp/log_hardware_cron_lock', '/tmp/log_hardware.log');
 
 // PDO connection
 try {
@@ -195,28 +194,4 @@ $stmt->bindValue(':cpu_temperature', $cpuTemperature);
 $stmt->execute();
 
 echo "Logged system metrics successfully.";
-
-
-function checkLock()
-{
-    $lock_file = '/tmp/log_hardware_cron_lock';
-    $log_file = '/tmp/log_hardware.log'; // Define the path to your log file
-    
-    // Check if the lock file exists
-    if (file_exists($lock_file)) {
-        // Log the message to the specified log file
-        file_put_contents($log_file, date('Y-m-d H:i:s') . " - The previous script is still running.\n", FILE_APPEND);
-        exit("The previous script is still running"); // Exit if the previous script is still running
-    }
-    
-    // Create a lock file
-    file_put_contents($lock_file, "running");
-    
-    // Ensure the lock file is deleted when the script exits
-    register_shutdown_function(function() use ($lock_file) {
-        unlink($lock_file);
-    });
-}
-
-?>
 
